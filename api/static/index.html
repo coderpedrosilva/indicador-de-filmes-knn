@@ -2,13 +2,14 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Mini Netflix Inteligente</title>
+<title>Mini Streaming Inteligente</title>
 <style>
 body{margin:0;font-family:Arial;background:#0f0f0f;color:white}
 h1{text-align:center;margin:20px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;padding:20px}
-.card{background:#1c1c1c;border-radius:12px;padding:12px;text-align:center}
-.card img{width:100%;border-radius:8px}
+.row{margin:20px}
+.row h2{margin:10px 0}
+.row-container{display:flex;gap:16px;overflow-x:auto;padding-bottom:10px}
+.card{min-width:160px;background:#1c1c1c;border-radius:12px;padding:12px;text-align:center}
 .stars span{font-size:22px;cursor:pointer;color:#555}
 .stars span.active{color:gold}
 button{margin:20px auto;display:block;padding:14px 30px;border:none;border-radius:10px;background:#e50914;color:white;font-size:16px;cursor:pointer}
@@ -18,34 +19,43 @@ button{margin:20px auto;display:block;padding:14px 30px;border:none;border-radiu
 
 <body>
 
-<h1>🎬 Mini Netflix Inteligente</h1>
+<h1>🎬 Mini Streaming Inteligente</h1>
 
-<div class="grid" id="catalog"></div>
+<div id="catalog"></div>
 
 <button onclick="discover()">Descobrir novos filmes</button>
 
 <div class="reco">
 <h2>Recomendado para você</h2>
-<div class="grid" id="recs"></div>
+<div class="row-container" id="recs"></div>
 </div>
 
 <script>
-const movies = [
-"John Wick","Mad Max: Fury Road","Velozes e Furiosos","Missão Impossível","Duro de Matar","Gladiador","Matrix",
-"Invocação do Mal","It: A Coisa","O Exorcista","Atividade Paranormal","Hereditário","Jogos Mortais","A Bruxa",
-"As Branquelas","Se Beber Não Case","Todo Mundo em Pânico","Minha Mãe é uma Peça","American Pie","Click","Gente Grande",
-"Titanic","Diário de uma Paixão","Forrest Gump","À Procura da Felicidade","A Espera de um Milagre","O Pianista","Clube da Luta",
-"Interestelar","Blade Runner","Ex Machina","Avatar","Gravidade","Distrito 9","Duna",
-"Toy Story","Shrek","Procurando Nemo","Up","Divertida Mente","Os Incríveis","Kung Fu Panda"
-];
+const catalog = {
+"Ação":["John Wick","Mad Max: Fury Road","Velozes e Furiosos","Missão Impossível","Duro de Matar","Gladiador","Matrix"],
+"Terror":["Invocação do Mal","It: A Coisa","O Exorcista","Atividade Paranormal","Hereditário","Jogos Mortais","A Bruxa"],
+"Comédia":["As Branquelas","Se Beber Não Case","Todo Mundo em Pânico","Minha Mãe é uma Peça","American Pie","Click","Gente Grande"],
+"Drama":["Titanic","Diário de uma Paixão","Forrest Gump","À Procura da Felicidade","A Espera de um Milagre","O Pianista","Clube da Luta"],
+"Ficção":["Interestelar","Blade Runner","Ex Machina","Avatar","Gravidade","Distrito 9","Duna"],
+"Animação":["Toy Story","Shrek","Procurando Nemo","Up","Divertida Mente","Os Incríveis","Kung Fu Panda"]
+};
 
 function renderCatalog(){
- const c=document.getElementById("catalog");
- movies.forEach(m=>{
-  const div=document.createElement("div");
-  div.className="card";
-  div.innerHTML=`<h3>${m}</h3><div class="stars">${[1,2,3,4,5].map(n=>`<span onclick="rate('${m}',${n},this)">★</span>`).join("")}</div>`;
-  c.appendChild(div);
+ const area=document.getElementById("catalog");
+ Object.keys(catalog).forEach(cat=>{
+  const row=document.createElement("div");
+  row.className="row";
+  row.innerHTML=`<h2>${cat}</h2><div class="row-container"></div>`;
+  const container=row.querySelector(".row-container");
+
+  catalog[cat].forEach(m=>{
+   const card=document.createElement("div");
+   card.className="card";
+   card.innerHTML=`<h3>${m}</h3><div class="stars">${[1,2,3,4,5].map(n=>`<span onclick="rate('${m}',${n},this)">★</span>`).join("")}</div>`;
+   container.appendChild(card);
+  });
+
+  area.appendChild(row);
  });
 }
 
@@ -61,10 +71,10 @@ async function discover(){
  const area=document.getElementById("recs");
  area.innerHTML="";
  data.forEach(f=>{
-  const div=document.createElement("div");
-  div.className="card";
-  div.innerHTML=`<h3>${f[0]}</h3><p>${f[1]}</p>`;
-  area.appendChild(div);
+  const card=document.createElement("div");
+  card.className="card";
+  card.innerHTML=`<h3>${f[0]}</h3><p>${f[1]}</p>`;
+  area.appendChild(card);
  });
 }
 
