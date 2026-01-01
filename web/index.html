@@ -1,0 +1,17 @@
+<h2>🎬 Recomendador de Filmes</h2>
+
+Violência <input type="range" min="0" max="10" id="v"><br>
+Romance <input type="range" min="0" max="10" id="r"><br>
+Ação <input type="range" min="0" max="10" id="a"><br>
+Comédia <input type="range" min="0" max="10" id="c"><br>
+
+<button onclick="go()">Recomendar</button>
+<pre id="res"></pre>
+
+<script>
+async function go(){
+ const body={violencia:v.value,romance:r.value,acao:a.value,comedia:c.value}
+ const r=await fetch("http://localhost:8000/recommend",{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+ res.innerText=JSON.stringify(await r.json(),null,2)
+}
+</script>
