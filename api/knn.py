@@ -1,6 +1,6 @@
 import numpy as np
 from collections import Counter
-from normalizer import normalize_dataset, normalize_user
+from .normalizer import normalize_dataset, normalize_user
 
 def euclidean(a,b):
     return np.sqrt(np.sum((a-b)**2))

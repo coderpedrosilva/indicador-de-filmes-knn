@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Indicador de Filmes</title>
+
+<style>
+body{font-family:Arial;background:#f5f6fa;margin:0;padding:0}
+.container{max-width:520px;margin:60px auto;background:white;padding:30px;border-radius:14px;box-shadow:0 12px 30px rgba(0,0,0,.12)}
+h2{text-align:center;color:#2d3436}
+.group{margin-bottom:18px}
+label{display:flex;justify-content:space-between;font-weight:bold;margin-bottom:6px;color:#636e72}
+input[type=range]{width:100%}
+button{width:100%;padding:14px;background:#0984e3;color:white;border:none;border-radius:10px;font-size:16px;cursor:pointer}
+button:hover{background:#0770c4}
+.result{background:#ecf0f1;padding:18px;border-radius:10px;margin-top:22px;font-size:14px;color:#2d3436}
+.footer{text-align:center;font-size:12px;color:#b2bec3;margin-top:20px}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>🎬 Indicador de Filmes por Similaridade</h2>
+
+<div class="group"><label>Violência <span id="vlabel">5</span></label><input id="violencia" type="range" min="0" max="10" value="5" oninput="vlabel.innerText=this.value"></div>
+<div class="group"><label>Romance <span id="rlabel">5</span></label><input id="romance" type="range" min="0" max="10" value="5" oninput="rlabel.innerText=this.value"></div>
+<div class="group"><label>Ação <span id="alabel">5</span></label><input id="acao" type="range" min="0" max="10" value="5" oninput="alabel.innerText=this.value"></div>
+<div class="group"><label>Comédia <span id="clabel">5</span></label><input id="comedia" type="range" min="0" max="10" value="5" oninput="clabel.innerText=this.value"></div>
+
+<button onclick="recomendar()">Recomendar Filmes</button>
+
+<div class="result" id="res">Informe suas preferências e clique em “Recomendar Filmes”.</div>
+<div class="footer">Sistema baseado em Aprendizagem por Instâncias (kNN)</div>
+</div>
+
+<script>
+async function recomendar(){
+ const body={
+  violencia:parseInt(violencia.value),
+  romance:parseInt(romance.value),
+  acao:parseInt(acao.value),
+  comedia:parseInt(comedia.value)
+ }
+
+ try{
+  const r=await fetch("/api/recommend",{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+  if(!r.ok) throw new Error("Erro na API")
+  const data=await r.json()
+
+  document.getElementById("res").innerHTML =
+   data.map(f=>`<b>${f[0]}</b> <small>(${f[1]})</small><br>Distância: ${f[2].toFixed(3)}`).join("<hr>")
+ }catch(e){
+  document.getElementById("res").innerText="Erro ao consultar a API."
+ }
+}
+</script>
+</body>
+</html>
