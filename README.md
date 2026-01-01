@@ -90,7 +90,7 @@ A interface simula uma plataforma de streaming real:
 
 > 📸 Interface
 
-
+![Interface](assets/interface.png)
 
 ---
 
