@@ -1,4 +1,4 @@
-# 🎬 Mini Streaming Inteligente — Recomendador por Similaridade (kNN)
+# 🎬 Mini Streaming Inteligente - Recomendador por Similaridade (kNN)
 
 Sistema de recomendação de filmes baseado em Aprendizagem Baseada em Instâncias (Instance-Based Learning) utilizando o algoritmo k-Nearest Neighbors (kNN) para sugerir conteúdos de forma personalizada, explicável e com descoberta controlada.
 
