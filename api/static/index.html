@@ -12,7 +12,9 @@ h1{text-align:center;margin:20px 0}
 .card{min-width:160px;background:#1c1c1c;border-radius:12px;padding:12px;text-align:center}
 .stars span{font-size:22px;cursor:pointer;color:#555}
 .stars span.active{color:gold}
-button{margin:20px auto;display:block;padding:14px 30px;border:none;border-radius:10px;background:#e50914;color:white;font-size:16px;cursor:pointer}
+button{margin:10px auto;display:block;padding:14px 30px;border:none;border-radius:10px;color:white;font-size:16px;cursor:pointer}
+.btn-discover{background:#e50914}
+.btn-reset{background:#333}
 .reco{background:#141414;padding:20px}
 </style>
 </head>
@@ -23,7 +25,8 @@ button{margin:20px auto;display:block;padding:14px 30px;border:none;border-radiu
 
 <div id="catalog"></div>
 
-<button onclick="discover()">Descobrir novos filmes</button>
+<button class="btn-discover" onclick="discover()">Descobrir novos filmes</button>
+<button class="btn-reset" onclick="resetRatings()">Limpar avaliações</button>
 
 <div class="reco">
 <h2>Recomendado para você</h2>
@@ -82,6 +85,12 @@ async function discover(){
   card.innerHTML=`<h3>${f[0]}</h3><p>${f[1]}</p>`;
   area.appendChild(card);
  });
+}
+
+async function resetRatings(){
+ await fetch("/api/reset",{method:"POST",headers:{'X-Session-Id':sessionId}});
+ document.querySelectorAll(".stars span").forEach(s=>s.classList.remove("active"));
+ document.getElementById("recs").innerHTML="";
 }
 
 renderCatalog();

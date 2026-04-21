@@ -33,6 +33,13 @@ def rate(data: dict, request: Request):
     ratings[data["filme"]] = nota
     return {"status":"ok","total_avaliados":len(ratings)}
 
+# Limpar avaliações
+@app.post("/api/reset")
+def reset(request: Request):
+    session_id = request.headers.get("X-Session-Id", "default")
+    sessions[session_id] = {}
+    return {"status": "ok"}
+
 # Recomendar
 @app.get("/api/recommend")
 def recommend(request: Request):
