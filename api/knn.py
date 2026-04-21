@@ -12,14 +12,22 @@ def build_user_profile(ratings, df):
     weights=[]
 
     for filme,nota in ratings.items():
-        row = df[df["filme"]==filme].iloc[0]
-        vectors.append(row[FEATURES].values * nota)
+        match = df[df["filme"]==filme]
+        if match.empty:
+            continue
+        vectors.append(match.iloc[0][FEATURES].values * nota)
         weights.append(nota)
 
-    return np.sum(vectors, axis=0) / np.sum(weights)
+    total_weight = np.sum(weights)
+    if not vectors or total_weight == 0:
+        return None
+
+    return np.sum(vectors, axis=0) / total_weight
 
 def recommend_knn(ratings, df, k=5):
     profile = build_user_profile(ratings, df)
+    if profile is None:
+        return []
 
     norm_df, mins, maxs = normalize_dataset(df, FEATURES)
     profile_norm = normalize_user(profile, mins.values, maxs.values)
@@ -30,7 +38,7 @@ def recommend_knn(ratings, df, k=5):
         if row["filme"] in ratings:
             continue
 
-        movie_norm = norm_df.iloc[i].values
+        movie_norm = norm_df.loc[i].values
         d = euclidean(profile_norm, movie_norm)
         candidates.append((row["filme"],row["classe"],float(d)))
 
@@ -38,7 +46,7 @@ def recommend_knn(ratings, df, k=5):
 
     top = candidates[:15]
     main = top[:3]
-    explore = random.sample(top[3:],2)
+    explore = random.sample(top[3:], min(2, len(top[3:])))
 
     final=[]
     used_classes=set()

@@ -31,6 +31,12 @@ button{margin:20px auto;display:block;padding:14px 30px;border:none;border-radiu
 </div>
 
 <script>
+const sessionId = localStorage.getItem('session_id') || (() => {
+  const id = crypto.randomUUID();
+  localStorage.setItem('session_id', id);
+  return id;
+})();
+
 const catalog = {
 "Ação":["John Wick","Mad Max: Fury Road","Velozes e Furiosos","Missão Impossível","Duro de Matar","Gladiador","Matrix"],
 "Terror":["Invocação do Mal","It: A Coisa","O Exorcista","Atividade Paranormal","Hereditário","Jogos Mortais","A Bruxa"],
@@ -60,13 +66,13 @@ function renderCatalog(){
 }
 
 function rate(filme,nota,el){
- fetch("/api/rate",{method:"POST",headers:{'Content-Type':'application/json'},body:JSON.stringify({filme,nota})});
+ fetch("/api/rate",{method:"POST",headers:{'Content-Type':'application/json','X-Session-Id':sessionId},body:JSON.stringify({filme,nota})});
  const stars=el.parentNode.querySelectorAll("span");
  stars.forEach((s,i)=>s.classList.toggle("active",i<nota));
 }
 
 async function discover(){
- const r=await fetch("/api/recommend");
+ const r=await fetch("/api/recommend",{headers:{'X-Session-Id':sessionId}});
  const data=await r.json();
  const area=document.getElementById("recs");
  area.innerHTML="";
